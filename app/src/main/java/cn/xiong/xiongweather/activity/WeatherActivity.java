@@ -1,5 +1,6 @@
 package cn.xiong.xiongweather.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -31,6 +32,7 @@ import cn.xiong.xiongweather.R;
 import cn.xiong.xiongweather.constant.Url;
 import cn.xiong.xiongweather.entity.ForeCast;
 import cn.xiong.xiongweather.entity.Weather;
+import cn.xiong.xiongweather.service.AutoUpdateService;
 import cn.xiong.xiongweather.util.GetAddressUtil;
 import cn.xiong.xiongweather.util.HttpUtil;
 import okhttp3.Call;
@@ -86,6 +88,9 @@ public class WeatherActivity extends AppCompatActivity {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
+
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     private void loadBingPic(){
