@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -42,6 +44,12 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
+        if(Build.VERSION.SDK_INT >= 21){
+            View decoView = getWindow().getDecorView();
+            decoView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    |View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         initView();
         initData();
     }
@@ -87,11 +95,6 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void initData(){
-        if(Build.VERSION.SDK_INT >= 21){
-            View decoView = getWindow().getDecorView();
-            decoView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
         SharedPreferences weatherPre = PreferenceManager.getDefaultSharedPreferences(this);
         String json = weatherPre.getString("weather",null);
         if(json != null){
