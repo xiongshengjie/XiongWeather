@@ -25,11 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xiong.xiongweather.R;
+import cn.xiong.xiongweather.activity.MainActivity;
 import cn.xiong.xiongweather.activity.WeatherActivity;
 import cn.xiong.xiongweather.constant.Url;
 import cn.xiong.xiongweather.db.City;
 import cn.xiong.xiongweather.db.Country;
 import cn.xiong.xiongweather.db.Province;
+import cn.xiong.xiongweather.entity.Weather;
 import cn.xiong.xiongweather.util.GetAddressUtil;
 import cn.xiong.xiongweather.util.HttpUtil;
 import okhttp3.Call;
@@ -89,10 +91,17 @@ public class ChooseAreaFragment extends Fragment {
                     queryCountries();
                 }else if(current == COUNTRY){
                     String weatherId = countryList.get(i).getWeatherId();
-                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("weather_id",weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    if(getActivity() instanceof MainActivity){
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id",weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else {
+                        WeatherActivity weatherActivity = (WeatherActivity) getActivity();
+                        weatherActivity.drawerLayout.closeDrawers();
+                        weatherActivity.refreshLayout.setRefreshing(true);
+                        weatherActivity.requestWeather(weatherId);
+                    }
                 }
             }
         });
