@@ -1,15 +1,20 @@
 package cn.xiong.xiongweather.activity;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import org.w3c.dom.Text;
 
@@ -31,6 +36,7 @@ public class WeatherActivity extends AppCompatActivity {
     private ScrollView weatherLayout;
     private TextView titleCity,titleUpdateTime,degreeText,weatherInfoText,aqiText,pm25Text,comfortText,carWashText,sportText;
     private LinearLayout forecastLayout;
+    private ImageView bingPic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,9 +58,40 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText = (TextView) findViewById(R.id.car_wash_text);
         sportText = (TextView) findViewById(R.id.sport_text);
         forecastLayout = (LinearLayout) findViewById(R.id.forecast_layout);
+        bingPic = (ImageView) findViewById(R.id.bing_pic);
+    }
+
+    private void loadBingPic(){
+        HttpUtil.HttpGet(Url.BINGPIC, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String bingpic = response.body().string();
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
+                editor.putString("bing_pic",bingpic);
+                editor.apply();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(WeatherActivity.this)
+                                .load(bingpic)
+                                .into(bingPic);
+                    }
+                });
+            }
+        });
     }
 
     private void initData(){
+        if(Build.VERSION.SDK_INT >= 21){
+            View decoView = getWindow().getDecorView();
+            decoView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         SharedPreferences weatherPre = PreferenceManager.getDefaultSharedPreferences(this);
         String json = weatherPre.getString("weather",null);
         if(json != null){
@@ -64,6 +101,15 @@ public class WeatherActivity extends AppCompatActivity {
             String weatherId = getIntent().getStringExtra("weather_id");
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
+        }
+
+        String bingpic = weatherPre.getString("bing_pic",null);
+        if(bingpic != null){
+            Glide.with(this)
+                    .load(bingpic)
+                    .into(bingPic);
+        }else {
+            loadBingPic();
         }
     }
 
@@ -85,8 +131,8 @@ public class WeatherActivity extends AppCompatActivity {
             TextView minText = (TextView) view.findViewById(R.id.min_text);
             dataText.setText(forecast.date);
             infoText.setText(forecast.more.info);
-            maxText.setText(forecast.temperature.max);
-            minText.setText(forecast.temperature.min);
+            maxText.setText(forecast.temperature.max+"℃");
+            minText.setText(forecast.temperature.min+"℃");
             forecastLayout.addView(view);
         }
         if(weather.aqi != null){
@@ -137,5 +183,7 @@ public class WeatherActivity extends AppCompatActivity {
                 });
             }
         });
+
+        loadBingPic();
     }
 }

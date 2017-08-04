@@ -7,4 +7,5 @@ package cn.xiong.xiongweather.constant;
 public class Url {
     public static String ADDRESS = "http://guolin.tech/api/china";
     public static String WEATHER = "https://free-api.heweather.com/v5/weather";
+    public static String BINGPIC = "http://guolin.tech/api/bing_pic";
 }
