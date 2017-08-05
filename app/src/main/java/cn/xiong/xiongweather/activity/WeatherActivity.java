@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -86,6 +87,13 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        weatherLayout.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                refreshLayout.setEnabled(weatherLayout.getScrollY()==0);
             }
         });
 
