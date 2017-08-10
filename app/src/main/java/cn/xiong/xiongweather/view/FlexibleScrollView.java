@@ -11,7 +11,7 @@ import android.widget.ScrollView;
 
 public class FlexibleScrollView extends ScrollView {
     private Context mContext;
-    private static int mMaxOverDistance = 150;
+    private static int mMaxOverDistance = 50;
 
     public FlexibleScrollView(Context context, AttributeSet attrs,
                               int defStyleAttr) {
@@ -42,8 +42,13 @@ public class FlexibleScrollView extends ScrollView {
     protected boolean overScrollBy(int deltaX, int deltaY, int scrollX,
                                    int scrollY, int scrollRangeX, int scrollRangeY,
                                    int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent) {
-        return super.overScrollBy(deltaX, deltaY, scrollX, scrollY,
+        if(!isTouchEvent){
+            if((scrollY<0&&deltaX<0)||(scrollY > getHeight()&&deltaX>0)){
+                deltaY = 0;
+            }
+        }
+        return super.overScrollBy(deltaX, (deltaY+1)/2, scrollX, scrollY,
                 scrollRangeX, scrollRangeY, maxOverScrollX, mMaxOverDistance,
-                false);
+                isTouchEvent);
     }
 }
