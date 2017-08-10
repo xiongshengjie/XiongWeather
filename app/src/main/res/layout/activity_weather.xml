@@ -32,12 +32,12 @@
                 <include layout="@layout/title"/>
                 <include layout="@layout/now"/>
 
-            <ScrollView
+            <cn.xiong.xiongweather.view.FlexibleScrollView
                 android:id="@+id/weather_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="none"
-                android:overScrollMode="never">
+                android:overScrollMode="ifContentScrolls">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -50,7 +50,7 @@
 
                 </LinearLayout>
 
-            </ScrollView>
+            </cn.xiong.xiongweather.view.FlexibleScrollView>
             </LinearLayout>
 
         </android.support.v4.widget.SwipeRefreshLayout>
